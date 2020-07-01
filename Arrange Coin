@@ -1,0 +1,18 @@
+class Solution {
+public:
+    int arrangeCoins(int n) {
+        int result=1;
+        while(n-- > 0)
+        {
+            n-=result;
+            result++;
+        }
+        return result-1;
+        
+//         long long int num = 2 * n;
+//         long long int ans = static_cast<int>(sqrt(num + 0.25) - 0.5);
+        
+//         return ans;
+        
+    }
+};
