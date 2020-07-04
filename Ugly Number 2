@@ -1,0 +1,64 @@
+/////////////////////////////////////////////////////////////////////
+/*Write a program to find the n-th ugly number.
+
+Ugly numbers are positive numbers whose prime factors only include 2, 3, 5. */
+
+class Solution {
+public:
+    int nthUglyNumber(int n)
+    {
+        vector<int> a(n);
+        a[0] = 1;
+        int c2=0, c3=0, c5=0;
+        for(int i = 1; i < n; i++)
+        {
+            int t2 = 2*a[c2];
+            int t3 = 3*a[c3];
+            int t5 = 5*a[c5];
+            a[i] = min(t2, min(t3, t5));
+            if(a[i] == t2) c2++;
+            if(a[i] == t3) c3++;
+            if(a[i] == t5) c5++;
+        }
+        return a[n-1];
+    }
+};
+
+
+////////////////////////////////////////////GEEKS FOR GEEKS////////////////////////////////////////////////
+/*class Solution {
+public:
+    int nthUglyNumber(int n) {
+        unsigned ugly[n]; // To store ugly numbers 
+    unsigned i2 = 0, i3 = 0, i5 = 0; 
+    unsigned next_multiple_of_2 = 2; 
+    unsigned next_multiple_of_3 = 3; 
+    unsigned next_multiple_of_5 = 5; 
+    unsigned next_ugly_no = 1; 
+  
+    ugly[0] = 1; 
+    for (int i=1; i<n; i++) 
+    { 
+       next_ugly_no = min(next_multiple_of_2, 
+                           min(next_multiple_of_3, 
+                               next_multiple_of_5)); 
+       ugly[i] = next_ugly_no; 
+       if (next_ugly_no == next_multiple_of_2) 
+       { 
+           i2 = i2+1; 
+           next_multiple_of_2 = ugly[i2]*2; 
+       } 
+       if (next_ugly_no == next_multiple_of_3) 
+       { 
+           i3 = i3+1; 
+           next_multiple_of_3 = ugly[i3]*3; 
+       } 
+       if (next_ugly_no == next_multiple_of_5) 
+       { 
+           i5 = i5+1; 
+           next_multiple_of_5 = ugly[i5]*5; 
+       } 
+    } /*End of for loop (i=1; i<n; i++) */
+    return next_ugly_no;
+    }
+};*/
