@@ -1,0 +1,111 @@
+//////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////LEETCODE SUBMISSION SOLUTION////////////////////////
+
+/*
+// Definition for a Node.
+class Node {
+public:
+    int val;
+    Node* prev;
+    Node* next;
+    Node* child;
+};
+*/
+
+class Solution {
+public:
+    Node* flatten(Node* head) {
+        
+        Node* p = head ;
+        
+        if(p==NULL)
+            return p ;
+        
+        while(p != NULL)
+        {
+            while(p != NULL && p->child == NULL)
+                p = p->next ;
+            
+            if(p==NULL)
+                break ;
+            
+            Node *temp = p->child ;
+            
+            
+            
+            
+            while(temp->next != NULL)
+                temp = temp->next ;
+            
+            temp->next = p->next ;
+            
+            if(p->next != NULL)
+                p->next->prev = temp ;
+            
+            p->next = p->child ;
+            p->next->prev = p ;
+            p->child = NULL ;
+            
+        }
+             return head ;
+
+    }
+    
+};
+
+
+
+///////////////////////////////////////////////////////////////////////////////
+///////////////////USING STACK (BFS) to Flatten the Linked List///////////////
+
+/*
+// Definition for a Node.
+class Node {
+public:
+    int val;
+    Node* prev;
+    Node* next;
+    Node* child;
+};
+*/
+
+class Solution {
+public:
+    Node* flatten(Node* head) {
+        
+        if(head==nullptr){
+            return head;
+        }
+        stack<Node*> s;
+        Node* cur=head; 
+        Node* temp=nullptr;
+        while(cur!=nullptr){
+            if(cur->child != nullptr){
+                
+                
+                if(cur->next!=nullptr){
+                    
+                    temp=cur->next;
+                        temp->prev = nullptr;
+                    s.push(temp);
+                }
+            
+                cur->next=cur->child;
+                cur->next->prev=cur;
+                cur->child=nullptr;
+            }
+                if(cur->next==nullptr && s.size()>0){
+                    
+                temp = s.top();
+                    s.pop();
+                cur->next = temp;
+                temp->prev = cur; 
+                }
+                
+                cur=cur->next;
+                
+            }
+        return head;
+        
+    }
+};
