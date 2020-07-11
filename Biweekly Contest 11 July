@@ -1,0 +1,185 @@
+
+///REFORM DATE
+class Solution {
+public:
+    string reformatDate(string date) {
+        int n=date.size();
+        string r=date.substr(n-4)+"-";
+        string m=date.substr(n-8, 3);
+        vector<string> v{"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
+        int i=0;
+        while(v[i]!=m)
+            ++i;
+        ++i;
+        if(i<10)
+            r+='0';
+        r+=to_string(i)+"-";
+        i=0;
+        string r2;
+        while(date[i]>='0'&&date[i]<='9') {
+            r2+=date[i];
+            ++i;
+        }
+        if(r2.size()<2)
+            r2="0"+r2;
+        return r+r2;
+    }
+}
+
+/////////////
+//////////Given the array nums consisting of n positive integers. You computed the sum of all non-empty continous subarrays from the array and then sort them in non-decreasing order, creating a new array of n * (n + 1) / 2 numbers.
+
+//Return the sum of the numbers from index left to index right (indexed from 1), inclusive, in the new array. Since the answer can be a huge number return it modulo 10^9 + 7.
+
+
+class Solution {
+public:
+    int rangeSum(vector<int>& nums, int n, int left, int right) {
+        vector<int> a;
+        for(int i=0; i<n; ++i) {
+            int s=0;
+            for(int j=i; j<n; ++j) {
+                s+=nums[j];
+                a.push_back(s);
+            }
+        }
+        sort(a.begin(), a.end());
+        --left, --right;
+        int s=0, M=1e9+7;
+        for(int i=left; i<=right; ++i)
+            s=(s+a[i])%M;
+        return s;
+    }
+};
+
+
+
+//////////////////
+////////
+/*1509. Minimum Difference Between Largest and Smallest Value in Three Moves
+User Accepted:1743
+User Tried:2531
+Total Accepted:1803
+Total Submissions:4642
+Difficulty:Medium
+Given an array nums, you are allowed to choose one element of nums and change it by any value in one move.
+
+Return the minimum difference between the largest and smallest value of nums after perfoming at most 3 moves.
+
+ 
+
+Example 1:
+
+Input: nums = [5,3,2,4]
+Output: 0
+Explanation: Change the array [5,3,2,4] to [2,2,2,2].
+The difference between the maximum and minimum is 2-2 = 0.
+Example 2:
+
+Input: nums = [1,5,0,10,14]
+Output: 1
+Explanation: Change the array [1,5,0,10,14] to [1,1,0,1,1]. 
+The difference between the maximum and minimum is 1-0 = 1./*
+
+
+class Solution {
+public:
+    int rangeSum(vector<int>& nums, int n, int left, int right) {
+        vector<int> a;
+        for(int i=0; i<n; ++i) {
+            int s=0;
+            for(int j=i; j<n; ++j) {
+                s+=nums[j];
+                a.push_back(s);
+            }
+        }
+        sort(a.begin(), a.end());
+        --left, --right;
+        int s=0, M=1e9+7;
+        for(int i=left; i<=right; ++i)
+            s=(s+a[i])%M;
+        return s;
+    }
+};
+
+
+
+/////////////////////////////////////////
+//////////////////////////
+/*1510. Stone Game IV
+User Accepted:1221
+User Tried:1888
+Total Accepted:1316
+Total Submissions:3737
+Difficulty:Hard
+Alice and Bob take turns playing a game, with Alice starting first.
+
+Initially, there are n stones in a pile.  On each player's turn, that player makes a move consisting of removing any non-zero square number of stones in the pile.
+
+Also, if a player cannot make a move, he/she loses the game.
+
+Given a positive integer n. Return True if and only if Alice wins the game otherwise return False, assuming both players play optimally.
+
+ 
+
+Example 1:
+
+Input: n = 1
+Output: true
+Explanation: Alice can remove 1 stone winning the game because Bob doesn't have any moves.
+Example 2:
+
+Input: n = 2
+Output: false
+Explanation: Alice can only remove 1 stone, after that Bob removes the last one winning the game (2 -> 1 -> 0).*/
+
+
+
+class Solution {
+public:
+    bool winnerSquareGame(int n) {
+        vector<int> dp(n+1);
+        for(int i=1; i<=n; ++i) {
+            for(int j=1; j*j<=i; ++j)
+                dp[i]|=!dp[i-j*j];
+        }
+        return dp[n];
+    }
+};
+
+int memo[101010];
+
+class Solution {
+public:
+	int win(int n) {
+		if(n==0) return 0;
+		if(memo[n]>=0) return memo[n];
+		
+		int i;
+		for(i=1;i*i<=n;i++) if(win(n-i*i)==0) return memo[n]=1;
+		return memo[n]=0;
+		
+	}
+
+    bool winnerSquareGame(int n) {
+		MINUS(memo);
+        
+        return win(n);
+        
+    }
+};
+
+
+class Solution {
+public:
+    bool winnerSquareGame(int n) {
+        vector<int> sg(n + 1);
+        vector<int> vis(n + 1);
+        for(int i = 1; i <= n; i += 1){
+            for(int j = 1; j * j <= i; j += 1) vis[sg[i - j * j]] = 1;
+            while(vis[sg[i]]) sg[i] += 1;
+            for(int j = 1; j * j <= i; j += 1) vis[sg[i - j * j]] = 0;
+        }
+        return sg[n];
+    }
+}
