@@ -1,0 +1,183 @@
+
+//////////////////////////////GEEKS FOR GEEKS/////////////////////////////////////
+class Solution {
+public:
+    vector<int> compute_indegree(vector<unordered_set<int> >& graph) 
+{ 
+    vector<int> degrees(graph.size(), 0); 
+    for (auto neighbors : graph) 
+        for (int neigh : neighbors) 
+            degrees[neigh]++; 
+    return degrees; 
+} 
+    
+    vector<unordered_set<int> > make_graph(int numTasks, 
+             vector<vector<int>>& prerequisites) 
+{ 
+    vector<unordered_set<int> > graph(numTasks); 
+        
+        for(int i=0;i<prerequisites.size();i++){
+            
+            graph[prerequisites[i][1]].insert(prerequisites[i][0]);
+        }
+    // for (auto pre : prerequisites) 
+    //     graph[pre.second].insert(pre.first); 
+    return graph; 
+} 
+    
+    vector<int> findOrder(int numCourses, vector<vector<int>>& prerequisites) {
+        
+        // Create an adjacency list 
+    vector<unordered_set<int> > graph = 
+            make_graph(numCourses, prerequisites); 
+  
+    // Find vertices of zero degree 
+    vector<int> degrees = compute_indegree(graph); 
+    queue<int> zeros; 
+    for (int i = 0; i < numCourses; i++) 
+        if (!degrees[i]) 
+            zeros.push(i); 
+  
+    // Find vertices in topological order 
+    // starting with vertices of 0 degree 
+    // and reducing degrees of adjacent. 
+    vector<int> toposort; 
+    for (int i = 0; i < numCourses; i++) { 
+        if (zeros.empty()) 
+            return {}; 
+        int zero = zeros.front(); 
+        zeros.pop(); 
+        toposort.push_back(zero); 
+        for (int neigh : graph[zero]) { 
+            if (!--degrees[neigh]) 
+                zeros.push(neigh); 
+        } 
+    } 
+    return toposort; 
+        
+    }
+};
+
+////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////LEETCODE //////////////////////////////////////////////
+class Solution {
+public:
+    
+    bool tsort(vector<vector<int>> &adj, int i, vector<int> &visited, vector<int> &res) {
+        if (i >= adj.size())
+            return false;
+        
+        if (visited[i])
+            return visited[i] == 1;
+        
+        visited[i] = 1;
+        
+        for (auto &neigh : adj[i])
+            if (tsort(adj, neigh, visited, res))
+                return true;
+        
+        res.push_back(i);
+        
+        visited[i] = 2;
+        
+        return false;
+    }
+
+    vector<int> findOrder(int numCourses, vector<vector<int>>& prerequisites) {
+        vector<int> res;
+        vector<vector<int>> adj(numCourses);
+        vector<int> visited(numCourses, 0);
+        
+        for (auto &prereq : prerequisites)
+            adj[prereq[0]].push_back(prereq[1]);
+        
+        for (int i = 0; i < numCourses; ++i) {
+            if (tsort(adj, i, visited, res))
+                return {};
+        }
+        return res;
+    }
+};
+
+///////////////////////////////////////////
+//////////////////////////////////////////
+class Solution {
+private:
+    vector<int> ans;
+public:
+    vector<int> findOrder(int numCourses, vector<vector<int>>& prerequisites) {
+        vector<int> indegrees( numCourses, 0 );
+        unordered_map< int, vector<int>> nexts;
+        
+        for( vector<int>& pre : prerequisites ) {
+            indegrees[pre[0]]++;
+            nexts[pre[1]].push_back( pre[0] );
+        }
+        
+        queue<int> q;
+        for( int i=0; i<numCourses; i++ ) {
+            if( indegrees[i] == 0 )
+                q.push( i );
+        }
+        
+        while( !q.empty() ) {
+            int cur = q.front();
+            q.pop();
+            ans.push_back( cur );
+            
+            for( int next : nexts[cur] ) {
+                indegrees[next]--;
+                if( indegrees[next] == 0 )
+                    q.push( next );
+            }
+        }
+        
+        if( ans.size() == numCourses )  
+            return ans;
+        else
+            return {};
+        
+    }
+};
+
+////////////////////////////////////////////////////
+//////////////////////////////////////////////////////
+class Solution {
+public:
+    vector<int> findOrder(int numCourses, vector<vector<int>>& prerequisites) {
+        vector<vector<int>> g(numCourses);
+        vector<int> indegree(numCourses);
+        
+        for (auto p : prerequisites) {
+            g[p[1]].push_back(p[0]);
+            indegree[p[0]]++;
+        }
+        
+        queue<int> zero_in;
+        for (int i = 0; i < numCourses; i++) {
+            if (indegree[i] == 0) {
+                zero_in.push(i);
+            }
+        }
+        
+        vector<int> ret;
+        while (!zero_in.empty()) {
+            auto z = zero_in.front();
+            zero_in.pop();
+            ret.push_back(z);
+            
+            for (auto n : g[z]) {
+                indegree[n]--;
+                if (indegree[n] == 0) {
+                    zero_in.push(n);
+                }
+            }
+        }
+        
+        if (ret.size() != numCourses) {
+            ret.clear();
+        }
+        
+        return ret;
+    }
+};
