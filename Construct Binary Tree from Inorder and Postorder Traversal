@@ -1,0 +1,51 @@
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    TreeNode* construct(vector<int>& inorder,int inStart, int inEnd, vector<int>& postorder,int postStart,int postEnd){
+        if (inStart > inEnd || postStart > postEnd)
+		return nullptr;
+        
+        int temp_root_value=postorder[postEnd];
+        TreeNode* root= new TreeNode(temp_root_value);
+        // root->val=temp_root_value;
+        // root->left=nullptr;
+        // root->right=nullptr;
+        int k = 0;
+	for (int i = 0; i < inorder.size(); i++) {
+		if (inorder[i] == temp_root_value) {
+			k = i;
+			break;                 //We may use Map to find the root elemet in o(1);
+		}
+	}
+        
+        //Recursive call for the rest
+        
+        root->left = construct(inorder, inStart, k - 1, postorder, postStart,
+			postStart + k - (inStart + 1));
+	// Becuase k is not the length, it needs to -(inStart+1) to get the length
+	root->right = construct(inorder, k + 1, inEnd, postorder, postStart + k- inStart, postEnd - 1);
+	// postStart+k-inStart = postStart+k-(inStart+1) +1
+        
+        return root;
+        
+    }
+    
+    TreeNode* buildTree(vector<int>& inorder, vector<int>& postorder) {
+        int inStart = 0;
+	int inEnd = inorder.size() - 1;
+	int postStart = 0;
+	int postEnd = postorder.size() - 1;
+ 
+	return construct(inorder, inStart, inEnd, postorder, postStart, postEnd);
+    }
+};
