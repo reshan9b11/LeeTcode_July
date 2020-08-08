@@ -1,0 +1,71 @@
+class Solution {
+public:
+    vector<vector<int>> verticalTraversal(TreeNode* root) {
+        vector<vector<int>> lRes;
+        map<int, vector<pair<int, int>>> lX2YValMap;
+        TravelTree(root, 0, 0, lX2YValMap);
+        auto it = lX2YValMap.begin();
+        for (; it != lX2YValMap.end(); it ++)
+        {
+            auto &YVal = it->second;
+            sort(YVal.begin(), YVal.end());
+            vector<int> lVals;
+            for (int i = 0; i < YVal.size(); i++)
+            {
+                lVals.push_back(YVal[i].second);
+            }
+            lRes.push_back(lVals);
+        }
+        return lRes;
+        
+    }
+    
+    void TravelTree(TreeNode *ipNode, int X, int Y, map<int, vector<pair<int, int>>> &oX2YValMap)
+    {
+        if (!ipNode)
+            return;
+        
+        oX2YValMap[X].push_back(pair<int, int>(Y, ipNode->val));
+        TravelTree(ipNode->left, X-1, Y+1, oX2YValMap);
+        TravelTree(ipNode->right, X+1, Y+1, oX2YValMap);
+    }
+    
+};
+
+//////////////////////////////////////////My ////////////////////////////////////////////////////////
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    
+    void traverse(TreeNode* r, int x, int y, unordered_map<int, unordered_map<int, set<int>>> &m) {
+  if (r != nullptr) {
+    m[x][y].insert(r->val);
+    traverse(r->left, x - 1, y + 1, m);
+    traverse(r->right, x + 1, y + 1, m);
+  }
+}
+    vector<vector<int>> verticalTraversal(TreeNode* root) {
+    unordered_map<int, unordered_map<int, set<int>>> m;
+      vector<vector<int>> res;  
+  traverse(root, 0, 0, m);
+  for (int x = -999; x < 1000; ++x) {
+    if (m.find(x) != end(m)) {
+      res.push_back(vector<int>());
+      for (int y = 0; y < 1000; ++y)
+        if (m[x].find(y) != end(m[x]))
+          res.back().insert(end(res.back()), begin(m[x][y]), end(m[x][y]));
+    }
+  }
+  return res;
+}
+};
